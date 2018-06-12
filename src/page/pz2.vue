@@ -101,13 +101,15 @@
                 <!--width="50">-->
               <!--</el-table-column>-->
               <el-table-column
-                class-name="el-icon-circle-plus">
-                <el-table-column
-                  fixed
-                  type="index"
-                  label="序号"
-                  width="50">
-                </el-table-column>
+                width="30">
+                <template slot-scope="scope">
+                  <div class="el-icon-minus"></div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                type="index"
+                label="序号"
+                width="50">
               </el-table-column>
               <el-table-column
                 class-name="text_edit"
@@ -130,9 +132,13 @@
                 prop="bz"
                 label="币种">
                 <template slot-scope="scope">
-                  <el-select size="mini" v-model="scope.row.bz" placeholder="请选择币种" @change="handleEdit(scope.$index, scope.row)">
-                    <el-option label="rmb" value="rmb"></el-option>
-                    <el-option label="$" value="$"></el-option>
+                  <el-select size="mini" v-model="scope.row.bz"  filterable="" allow-create="" placeholder="请选择币种" @change="handleEdit(scope.$index, scope.row)">
+                    <!--<el-option label="rmb" value="rmb"></el-option>-->
+                    <!--<el-option label="$" value="$"></el-option>-->
+                    <el-option v-for="item in select_bz" :key="item.value" :label="item.value" :value="item.value">
+                      <span style="float: left">{{ item.value}}</span>
+                      <span style="float: right; color: #8492a6; font-size: 13px">{{ item.label}}</span>
+                    </el-option>
                   </el-select>
                   <span>{{scope.row.bz}}</span>
                 </template>
@@ -425,10 +431,20 @@
         },
         value1: '',
         value2: '',
+        select_bz: [{
+          value: 'CNY',
+          label: '人民币'
+        }, {
+          value: 'USD',
+          label: '美元'
+        }, {
+          value: 'EUR',
+          label: '欧元'
+        }],
         tableData3: [{
           zy:"摘要",
           hjkm:"科目1",
-          bz:"rmb",
+          bz:"CNY",
           num:0,
           num_0:1,
           num_1:0,
@@ -456,7 +472,7 @@
         },{
           zy:"摘要2",
           hjkm:"科目2",
-          bz:"rmb",
+          bz:"USD",
           num:0,
           num_0:2,
           num_1:0,
@@ -486,9 +502,6 @@
     },
     methods: {
       handleCurrentChange(row, event, column) {//当前编辑表行改变事件
-        // console.log(row)
-        // console.log(event)
-        // console.log(column)
         row.num = row.num_0*100000000 + row.num_1*10000000 + row.num_2*1000000 + row.num_3*100000 + row.num_4*10000 + row.num_5*1000 + row.num_6*100 + row.num_7*10 + row.num_8*1 + row.num_9*0.1 + row.num_10*0.01
         row.num = row.num.toFixed(2)
         row.num2 = row.num2_0*100000000 + row.num2_1*10000000 + row.num2_2*1000000 + row.num2_3*100000 + row.num2_4*10000 + row.num2_5*1000 + row.num2_6*100 + row.num2_7*10 + row.num2_8*1 + row.num2_9*0.1 + row.num2_10*0.01
@@ -580,7 +593,7 @@
         // console.log(index, row);
       },
       arraySpanMethod({ row, column, rowIndex, columnIndex }) {//金额input框的合并
-          if (columnIndex === 26||columnIndex === 27) {
+          if (columnIndex === 27||columnIndex === 28) {
             return [1, 11];
           }
       },
