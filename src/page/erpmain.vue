@@ -1,84 +1,144 @@
 <template>
-	<div>
-    <div class="wrapper">
-      <div class="left">
-        <div v-for="item in value1" :is="getkey(item,data)" style="border:1px solid black"></div>
-      </div>
-      <div class="right">
-        <el-transfer v-model="value1" :data="data" :titles="['功能列表', '激活列表']"
-                     :button-texts="['隐藏', '激活']" target-order="push"></el-transfer>
-      </div>
+    <div id="demo">
+        <!-- <button @click="getList">getList</button> -->
+        <power-drag ref="cyGridster" :your-list="myList" :base-margin-left="baseMarginLeft" :base-margin-top="baseMarginTop" :base-width="baseWidth"
+            :base-height="baseHeight">
+          <template v-for="(item,index) in myList" :slot="'slot'+index">
+            <div class="dragHandle">
+              <div class="tool">
+                <span @click="deleteItem(index)">删除此框</span>
+              </div>
+              <div :is="item.component"></div>
+            </div>
+          </template>
+            <!-- <div v-for="(item,index) in myList" :slot="'slot'+index"></div> -->
+        </power-drag>
     </div>
-  </div>
 </template>
 
 <script>
-  import zj1 from '@/components/zj1'
-  import zj2 from '@/components/zj2'
-  import zj3 from '@/components/zj3'
-  import zj4 from '@/components/zj4'
-export default {
-	name: 'erpmain',
-  data () {
-    return {
-      data: [
-        {
-          key: 1,
-          label :  '组件1',
-          disabled: false,
-          component: zj1
-        },
-        {
-          key: 2,
-          label :  '组件2',
-          disabled: false,
-          component: zj2
-        },
-        {
-          key: 3,
-          label :  '组件3',
-          disabled: false,
-          component: zj3
-        },
-        {
-          key: 4,
-          label :  '组件4',
-          disabled: false,
-          component: zj4
-        }
-      ],
-      value1: [1, 4]
-    }
-  },
-  mounted:function(){
+    import drag from '@/components/drag/drag.vue';
+    import mock from "mockjs"
+    import $ from "jquery"
+    import _ from "lodash"
+    import zj1 from '@/components/zj1'
+    import zj2 from '@/components/zj2'
+    import zj3 from '@/components/zj3'
+    import zj4 from '@/components/zj4'
 
-  },
-  methods:{
-      getkey: function(key,array){
-        for(var i=0;i<array.length;i++){
-          if(array[i].key == key){
-            return array[i].component
+    export default {
+        data() {
+            let list = mock.mock({
+                // "myList|10": [{
+                //     "id|+1": 1,
+                //     x: '@integer(1,5)',
+                //     y: '@integer(1,5)',
+                //     sizex: '@integer(1,3)',
+                //     sizey: '@integer(1,3)',
+                // }]
+                myList: [{
+                    "id": 1,
+                    "x": 1,
+                    "y": 1,
+                    "sizex": 5,
+                    "sizey": 2,
+                    "component":"zj1"
+                },{
+                  "id": 2,
+                  "x": 6,
+                  "y": 1,
+                  "sizex": 5,
+                  "sizey": 2,
+                  "component":"zj2"
+                },{
+                  "id": 3,
+                  "x": 1,
+                  "y": 2,
+                  "sizex": 5,
+                  "sizey": 2,
+                  "component":"zj3"
+                },{
+                  "id": 4,
+                  "x": 6,
+                  "y": 1,
+                  "sizex": 5,
+                  "sizey": 2,
+                  "component":"zj4"
+                }]
+            })
+            return {
+                myList: list.myList,
+                baseWidth: 0,
+                baseHeight: 0
+            }
+        },
+        components: {
+            'power-drag': drag,
+            zj1,zj2,zj3,zj4
+        },
+        name: 'app',
+        methods: {
+            getList() {
+                let gridster = this.$refs['cyGridster']; //获取gridster实例
+                console.log(JSON.stringify(gridster.getList()));
+            }
+        },
+        created() {
+            //屏幕适配，使得当前布局能在所有分辨率下适用，示例是在1366*638分辨率下完成
+            let screenWidth = window.innerWidth;
+            let screenHeight = window.innerHeight;
+            this.baseWidth = 100 * (screenWidth / 1366);
+            this.baseHeight = 100 * (screenHeight / 638);
+            this.baseMarginLeft = 10 * (screenWidth / 1366);
+            this.baseMarginTop = 10 * (screenHeight / 638);
+            this.$nextTick(function () {
+                $(".dragAndResize").css("width", "calc(100% - " + (this.baseMarginLeft) + "px)")
+            })
+        },
+        mounted() {
+            let gridster = this.$refs['cyGridster']; //获取gridster实例
+            console.log(gridster)
+            gridster.init(); //在适当的时候初始化布局组件
+        },
+        methods: {
+          deleteItem(index) {
+            let gridster = this.$refs['cyGridster']; //获取gridster实例
+            gridster.removeItem(index); //此时会在this.myList的index位置将item置为{}，目的是为了不让vue重新渲染整个v-for。
+            //注意，这里删除布局框并不会删除里面的组件，组件需要自己用v-if来控制销毁，如果是highchart，必须手动调用chartInstance.$destroy()
           }
         }
-      }
-  },
-  components:{
-	  zj1,zj2,zj3,zj4
-  }
-}
-</script>
-<style lang="less" scoped>
-	@import '../style/mixin';
-  .wrapper{
-    display:grid;
-    grid-template-columns: auto 200px;
-    grid-template-rows:auto 40px;
-    .left{
-      display:grid;
-      grid-template-columns: auto auto;
-      grid-template-rows:auto;
-      grid-column-gap: 10px;
-      grid-row-gap: 10px;
     }
-  }
+
+</script>
+
+<style lang='less' scoped>
+    body {
+        overflow-x: hidden;
+        & * {
+            box-sizing: border-box;
+        }
+    }
+
+    #demo {
+        width: 100%;
+        /*padding: 1.5em 0 1.5em 0;*/
+    }
+    .dragAndResize {
+      .item {}
+      .dragHandle {
+        //拖动手柄样式
+        padding: 1.5rem!important;
+        height: 100%;
+        overflow:hidden;
+        cursor:auto;
+        .tool {
+          position: absolute;
+          right: .5rem;
+          top: .5rem;
+          cursor: pointer;
+          font-weight: bold;
+        }
+      }
+    }
+
 </style>

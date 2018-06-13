@@ -65,14 +65,14 @@
               border
               :data="tableData3"
               show-summary
+              height="330"
               :summary-method="getSummaries"
               style="width: 100%"
               ref="singleTable"
               :span-method="arraySpanMethod"
-              max-height="600"
               highlight-current-row
+              @header-click="headClick"
               @row-click="handleCurrentChange"
-              current-row-key="0"
               class="tb-edit">
               <!--<el-table-column type="expand" width="50">-->
                 <!--<template slot-scope="props">-->
@@ -101,9 +101,14 @@
                 <!--width="50">-->
               <!--</el-table-column>-->
               <el-table-column
-                width="30">
+                width="30"
+              label="+"
+              class-name="addBtn">
                 <template slot-scope="scope">
-                  <div class="el-icon-minus"></div>
+                  <el-button
+                    @click.native.prevent="deleteRow(scope.$index, tableData3)"
+                    type="text"
+                    size="mini">-</el-button>
                 </template>
               </el-table-column>
               <el-table-column
@@ -139,6 +144,11 @@
                       <span style="float: left">{{ item.value}}</span>
                       <span style="float: right; color: #8492a6; font-size: 13px">{{ item.label}}</span>
                     </el-option>
+                    <div>
+                      <el-button type="success" plain size="mini" @click="bzAdd">新增</el-button>
+                      <el-button type="primary" plain size="mini">修改</el-button>
+                      <el-button type="danger" plain size="mini">删除</el-button>
+                    </div>
                   </el-select>
                   <span>{{scope.row.bz}}</span>
                 </template>
@@ -601,9 +611,13 @@
         const { columns, data } = param;
         const sums = [];
         columns.forEach((column, index) => {
-          if (index === 0) {
-            sums[index] = '合计';
-            return;
+          if (index === 1) {
+            sums[index] = '合计'
+            return
+          }
+          if(index>1 && index<5){
+            sums[index] = ''
+            return
           }
           const values = data.map(item => Number(item[column.property]));
           if (!values.every(value => isNaN(value))) {
@@ -620,119 +634,161 @@
             sums[index] = '';
           }
         });
-        let new_sums = this.carry_num(sums)
+        let startNum = 5
+        let new_sums = this.carry_num(sums,startNum)
         return new_sums;
       },
-      carry_num(sums){//合计进位处理
+      carry_num(sums,startNum){//合计进位处理
         //本币借方
-        let num = sums[4]*100000000
+        let num = sums[startNum]*100000000
         let bol1 = true//判断0
-        num += sums[5]*10000000
-        num += sums[6]*1000000
-        num += sums[7]*100000
-        num += sums[8]*10000
-        num += sums[9]*1000
-        num += sums[10]*100
-        num += sums[11]*10
-        num += sums[12]*1
-        num += sums[13]*0.1
-        num += sums[14]*0.01
-        sums[4] = Math.floor(num/100000000)
-        sums[4] = this.num_clear(sums[4],bol1).num
-        bol1 = this.num_clear(sums[4],bol1).bol
+        num += sums[startNum+1]*10000000
+        num += sums[startNum+2]*1000000
+        num += sums[startNum+3]*100000
+        num += sums[startNum+4]*10000
+        num += sums[startNum+5]*1000
+        num += sums[startNum+6]*100
+        num += sums[startNum+7]*10
+        num += sums[startNum+8]*1
+        num += sums[startNum+9]*0.1
+        num += sums[startNum+10]*0.01
+        sums[startNum] = Math.floor(num/100000000)
+        sums[startNum] = this.num_clear(sums[startNum],bol1).num
+        bol1 = this.num_clear(sums[startNum],bol1).bol
         num %= 100000000
-        sums[5] = Math.floor(num/10000000)
-        sums[5] = this.num_clear(sums[5],bol1).num
-        bol1 = this.num_clear(sums[5],bol1).bol
+        sums[startNum+1] = Math.floor(num/10000000)
+        sums[startNum+1] = this.num_clear(sums[startNum+1],bol1).num
+        bol1 = this.num_clear(sums[startNum+1],bol1).bol
         num %= 10000000
-        sums[6] = Math.floor(num/1000000)
-        sums[6] = this.num_clear(sums[6],bol1).num
-        bol1 = this.num_clear(sums[6],bol1).bol
+        sums[startNum+2] = Math.floor(num/1000000)
+        sums[startNum+2] = this.num_clear(sums[startNum+2],bol1).num
+        bol1 = this.num_clear(sums[startNum+2],bol1).bol
         num %= 1000000
-        sums[7] = Math.floor(num/100000)
-        sums[7] = this.num_clear(sums[7],bol1).num
-        bol1 = this.num_clear(sums[7],bol1).bol
+        sums[startNum+3] = Math.floor(num/100000)
+        sums[startNum+3] = this.num_clear(sums[startNum+3],bol1).num
+        bol1 = this.num_clear(sums[startNum+3],bol1).bol
         num %= 100000
-        sums[8] = Math.floor(num/10000)
-        sums[8] = this.num_clear(sums[8],bol1).num
-        bol1 = this.num_clear(sums[8],bol1).bol
+        sums[startNum+4] = Math.floor(num/10000)
+        sums[startNum+4] = this.num_clear(sums[startNum+4],bol1).num
+        bol1 = this.num_clear(sums[startNum+4],bol1).bol
         num %= 10000
-        sums[9] = Math.floor(num/1000)
-        sums[9] = this.num_clear(sums[9],bol1).num
-        bol1 = this.num_clear(sums[9],bol1).bol
+        sums[startNum+5] = Math.floor(num/1000)
+        sums[startNum+5] = this.num_clear(sums[startNum+5],bol1).num
+        bol1 = this.num_clear(sums[startNum+5],bol1).bol
         num %= 1000
-        sums[10] = Math.floor(num/100)
-        sums[10] = this.num_clear(sums[10],bol1).num
-        bol1 = this.num_clear(sums[10],bol1).bol
+        sums[startNum+6] = Math.floor(num/100)
+        sums[startNum+6] = this.num_clear(sums[startNum+6],bol1).num
+        bol1 = this.num_clear(sums[startNum+6],bol1).bol
         num %= 100
-        sums[11] = Math.floor(num/10)
-        sums[11] = this.num_clear(sums[11],bol1).num
-        bol1 = this.num_clear(sums[11],bol1).bol
+        sums[startNum+7] = Math.floor(num/10)
+        sums[startNum+7] = this.num_clear(sums[startNum+7],bol1).num
+        bol1 = this.num_clear(sums[startNum+7],bol1).bol
         num %= 10
-        sums[12] = Math.floor(num/1)
+        sums[startNum+8] = Math.floor(num/1)
         num %= 1
         // sums[13] = Math.floor(num/0.1)
         // num %= 0.1
         // sums[14] = Math.floor(num/0.01)
         num = Math.round(num*100)
-        sums[13] = Math.floor(num/10)
+        sums[startNum+9] = Math.floor(num/10)
         num %= 10
-        sums[14] = Math.floor(num/1)
+        sums[startNum+10] = Math.floor(num/1)
         //本币贷方
-        let num2 = sums[15]*100000000
+        let num2 = sums[startNum+11]*100000000
         let bol2 = true
-        num2 += sums[16]*10000000
-        num2 += sums[17]*1000000
-        num2 += sums[18]*100000
-        num2 += sums[19]*10000
-        num2 += sums[20]*1000
-        num2 += sums[21]*100
-        num2 += sums[22]*10
-        num2 += sums[23]*1
-        num2 += sums[24]*0.1
-        num2 += sums[25]*0.01
-        sums[15] = Math.floor(num2/100000000)
-        sums[15] = this.num_clear(sums[15],bol2).num
-        bol2 = this.num_clear(sums[15],bol2).bol
+        num2 += sums[startNum+12]*10000000
+        num2 += sums[startNum+13]*1000000
+        num2 += sums[startNum+14]*100000
+        num2 += sums[startNum+15]*10000
+        num2 += sums[startNum+16]*1000
+        num2 += sums[startNum+17]*100
+        num2 += sums[startNum+18]*10
+        num2 += sums[startNum+19]*1
+        num2 += sums[startNum+20]*0.1
+        num2 += sums[startNum+21]*0.01
+        sums[startNum+11] = Math.floor(num2/100000000)
+        sums[startNum+11] = this.num_clear(sums[startNum+11],bol2).num
+        bol2 = this.num_clear(sums[startNum+11],bol2).bol
         num2 %= 100000000
-        sums[16] = Math.floor(num2/10000000)
-        sums[16] = this.num_clear(sums[16],bol2).num
-        bol2 = this.num_clear(sums[16],bol2).bol
+        sums[startNum+12] = Math.floor(num2/10000000)
+        sums[startNum+12] = this.num_clear(sums[startNum+12],bol2).num
+        bol2 = this.num_clear(sums[startNum+12],bol2).bol
         num2 %= 10000000
-        sums[17] = Math.floor(num2/1000000)
-        sums[17] = this.num_clear(sums[17],bol2).num
-        bol2 = this.num_clear(sums[17],bol2).bol
+        sums[startNum+13] = Math.floor(num2/1000000)
+        sums[startNum+13] = this.num_clear(sums[startNum+13],bol2).num
+        bol2 = this.num_clear(sums[startNum+13],bol2).bol
         num2 %= 1000000
-        sums[18] = Math.floor(num2/100000)
-        sums[18] = this.num_clear(sums[18],bol2).num
-        bol2 = this.num_clear(sums[18],bol2).bol
+        sums[startNum+14] = Math.floor(num2/100000)
+        sums[startNum+14] = this.num_clear(sums[startNum+14],bol2).num
+        bol2 = this.num_clear(sums[startNum+14],bol2).bol
         num2 %= 100000
-        sums[19] = Math.floor(num2/10000)
-        sums[19] = this.num_clear(sums[19],bol2).num
-        bol2 = this.num_clear(sums[19],bol2).bol
+        sums[startNum+15] = Math.floor(num2/10000)
+        sums[startNum+15] = this.num_clear(sums[startNum+15],bol2).num
+        bol2 = this.num_clear(sums[startNum+15],bol2).bol
         num2 %= 10000
-        sums[20] = Math.floor(num2/1000)
-        sums[20] = this.num_clear(sums[20],bol2).num
-        bol2 = this.num_clear(sums[20],bol2).bol
+        sums[startNum+16] = Math.floor(num2/1000)
+        sums[startNum+16] = this.num_clear(sums[startNum+16],bol2).num
+        bol2 = this.num_clear(sums[startNum+16],bol2).bol
         num2 %= 1000
-        sums[21] = Math.floor(num2/100)
-        sums[21] = this.num_clear(sums[21],bol2).num
-        bol2 = this.num_clear(sums[21],bol2).bol
+        sums[startNum+17] = Math.floor(num2/100)
+        sums[startNum+17] = this.num_clear(sums[startNum+17],bol2).num
+        bol2 = this.num_clear(sums[startNum+17],bol2).bol
         num2 %= 100
-        sums[22] = Math.floor(num2/10)
-        sums[22] = this.num_clear(sums[22],bol2).num
-        bol2 = this.num_clear(sums[22],bol2).bol
+        sums[startNum+18] = Math.floor(num2/10)
+        sums[startNum+18] = this.num_clear(sums[startNum+18],bol2).num
+        bol2 = this.num_clear(sums[startNum+18],bol2).bol
         num2 %= 10
-        sums[23] = Math.floor(num2/1)
+        sums[startNum+19] = Math.floor(num2/1)
         num2 %= 1
         // sums[24] = Math.floor(num2/0.1)
         // num2 %= 0.1
         // sums[25] = Math.floor(num2/0.01)
         num2 = Math.round(num2*100)
-        sums[24] = Math.floor(num2/10)
+        sums[startNum+20] = Math.floor(num2/10)
         num2 %= 10
-        sums[25] = Math.floor(num2/1)
+        sums[startNum+21] = Math.floor(num2/1)
         return sums
+      },
+      headClick (column, event) {
+        let $el = this.$jq(event.srcElement).parents('.addBtn')
+        if($el.length>0){
+          this.addNewData()
+        }
+      },
+      addNewData () {
+        let newData = {
+          zy:"",
+          hjkm:"",
+          bz:"",
+          num:0,
+          num_0:'',
+          num_1:'',
+          num_2:'',
+          num_3:'',
+          num_4:'',
+          num_5:'',
+          num_6:'',
+          num_7:'',
+          num_8:0,
+          num_9:0,
+          num_10:0,
+          num2:0,
+          num2_0:'',
+          num2_1:'',
+          num2_2:'',
+          num2_3:'',
+          num2_4:'',
+          num2_5:'',
+          num2_6:'',
+          num2_7:'',
+          num2_8:0,
+          num2_9:0,
+          num2_10:0
+        }
+        this.tableData3.push(newData)
+      },
+      deleteRow(index, rows) {
+        rows.splice(index, 1);
       },
       pzclick (event) {
         let $el = this.$jq(event.srcElement).parents('.el-table__row')
@@ -750,6 +806,23 @@
           num:num,
           bol:bol
         }
+      },
+      bzAdd () {
+        this.$prompt('请输入币种信息', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputErrorMessage: '币种信息不正确'
+        }).then(({ value }) => {
+          this.$message({
+            type: 'success',
+            message: '已录入币种: ' + value
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消输入'
+          })
+        })
       }
     }
   }
@@ -783,7 +856,7 @@
         }
       }
       .content2{
-        min-height:330px;
+        height:330px;
       }
       .content3{
         min-height:50px;
@@ -867,5 +940,8 @@
     }
     .el-table td, .el-table th{
       padding:0;
+    }
+    .addBtn{
+      cursor: pointer;
     }
 </style>

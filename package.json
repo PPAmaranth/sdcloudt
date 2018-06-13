@@ -20,6 +20,8 @@
     "jquery": "^3.3.1",
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
+    "lodash": "^4.17.10",
+    "mockjs": "^1.0.1-beta3",
     "stylish": "^1.0.0",
     "transform-runtime": "0.0.0",
     "vue": "^2.5.16",
