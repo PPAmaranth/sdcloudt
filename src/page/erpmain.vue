@@ -6,7 +6,7 @@
           <template v-for="(item,index) in myList" :slot="'slot'+index">
             <div class="dragHandle">
               <div class="tool">
-                <span @click="deleteItem(index)">删除此框</span>
+                <span @click="deleteItem(index)" class="el-icon-close" style="color:red;"></span>
               </div>
               <div :is="item.component"></div>
             </div>
@@ -112,13 +112,12 @@
 </script>
 
 <style lang='less' scoped>
-    body {
-        overflow-x: hidden;
-        & * {
-            box-sizing: border-box;
-        }
-    }
-
+    /*body {*/
+        /*overflow-x: hidden;*/
+        /*& * {*/
+            /*box-sizing: border-box;*/
+        /*}*/
+    /*}*/
     #demo {
         width: 100%;
         /*padding: 1.5em 0 1.5em 0;*/
@@ -127,18 +126,16 @@
       .item {}
       .dragHandle {
         //拖动手柄样式
-        padding: 1.5rem!important;
+        padding: 1.5rem;
         height: 100%;
-        overflow:hidden;
         cursor:auto;
         .tool {
           position: absolute;
-          right: .5rem;
-          top: .5rem;
+          right: .3rem;
+          top: .1rem;
           cursor: pointer;
           font-weight: bold;
         }
       }
     }
-
 </style>

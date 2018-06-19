@@ -2,10 +2,14 @@
   <div>
     <sd-top></sd-top>
     <sd-nav></sd-nav>
-    <el-row class="main_wrapper">
-      <el-col :span="2" ><div class="nav_test"></div></el-col>
-      <el-col :span="22"><div :is="nowcomponent"></div></el-col>
-    </el-row>
+    <!--<el-row class="main_wrapper">-->
+      <!--<el-col :span="2" ><div class="nav_test"></div></el-col>-->
+      <!--<el-col :span="22"><div :is="nowcomponent"></div></el-col>-->
+    <!--</el-row>-->
+    <div class="main_wrapper">
+      <div class="nav_test"></div>
+      <div class="main_content" :is="nowcomponent"></div>
+    </div>
     <sd-footer></sd-footer>
   </div>
 </template>
@@ -43,12 +47,23 @@ export default {
 }
 </script>
 
-<style>
+<style lang='less' scoped>
+  /*.main_wrapper{*/
+    /*min-height:610px;*/
+  /*}*/
+  /*.nav_test{*/
+    /*background:#e8e7e7;*/
+    /*min-height:610px;*/
+  /*}*/
   .main_wrapper{
-    min-height:610px;
-  }
-  .nav_test{
-    background:#e8e7e7;
-    min-height:610px;
+    display: flex;
+    align-items:stretch;
+    .nav_test{
+      background:#e8e7e7;
+      min-width:150px;
+    }
+    .main_content{
+      width:100%;
+    }
   }
 </style>
