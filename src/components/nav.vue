@@ -1,7 +1,7 @@
 <template>
 	<div class="nav_container">
 		<div class="menu">
-			<el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" :active-text-color="activeColor" menu-trigger="hover">
+			<el-menu :default-active="activeIndex" class="el-menu-demo" mode="vertical" @select="handleSelect" :active-text-color="activeColor" menu-trigger="hover" collapse background-color="#e8e7e7" >
 			  <el-menu-item :index="erp_nav.erpmain.url">{{erp_nav.erpmain.name}}</el-menu-item>
 				<el-submenu index="2">
 			    <template slot="title">{{erp_nav.nowpage}}</template>
@@ -72,13 +72,9 @@ export default {
     }
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
 	@import '../style/mixin';
-	.el-cascader{
-		line-height: 60px;
-	}
-	.el-menu--horizontal>.el-menu-item,.el-menu--horizontal>.el-submenu .el-submenu__title{
-		height: 40px;
-		line-height: 40px;
-	}
+  .el-menu--collapse{
+    width:100%;
+  }
 </style>

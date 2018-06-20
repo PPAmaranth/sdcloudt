@@ -89,7 +89,7 @@
       <el-button type="primary" icon="el-icon-edit" size="large">新增</el-button>
       <el-button type="primary" icon="el-icon-delete" size="large">删除</el-button>
     </div>
-  </div>	
+  </div>
 </template>
 
 <script>
@@ -165,7 +165,7 @@ export default {
     }
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
 	@import '../style/mixin';
 	.bar1{
     height: 45px;

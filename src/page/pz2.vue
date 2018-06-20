@@ -62,10 +62,11 @@
           </div>
           <div class="content2">
             <el-table
+              size="mini"
               border
               :data="tableData3"
               show-summary
-              height="330"
+              height="360"
               :summary-method="getSummaries"
               style="width: 100%"
               ref="singleTable"
@@ -750,7 +751,7 @@
         return sums
       },
       headClick (column, event) {
-        let $el = this.$jq(event.srcElement).parents('.addBtn')
+        let $el = this.$jq(event.target).parents('.addBtn')
         if($el.length>0){
           this.addNewData()
         }
@@ -791,7 +792,8 @@
         rows.splice(index, 1);
       },
       pzclick (event) {
-        let $el = this.$jq(event.srcElement).parents('.el-table__row')
+        //用event.target firefox没有srcElement
+        let $el = this.$jq(event.target).parents('.el-table__row')
         if($el.length==0){
           this.$refs.singleTable.setCurrentRow()
         }
@@ -828,12 +830,12 @@
   }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
     @import '../style/mixin.less';
     .wrapper{
       border:1px solid #c0bfbf;
       border-radius: 4px;
-      margin:10px 10px 0px 10px;
+      margin:10px 10px 10px 10px;
       .top{
         min-height: 36px;
         background: #e8e7e7;
@@ -856,7 +858,7 @@
         }
       }
       .content2{
-        height:330px;
+        height:360px;
       }
       .content3{
         min-height:50px;
@@ -937,9 +939,6 @@
     }
     .el-table__row{
       height:29px;
-    }
-    .el-table td, .el-table th{
-      padding:0;
     }
     .addBtn{
       cursor: pointer;

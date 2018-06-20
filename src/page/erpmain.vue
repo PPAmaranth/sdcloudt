@@ -1,9 +1,9 @@
 <template>
     <div id="demo">
         <!-- <button @click="getList">getList</button> -->
-        <power-drag ref="cyGridster" :your-list="myList" :base-margin-left="baseMarginLeft" :base-margin-top="baseMarginTop" :base-width="baseWidth"
+        <power-drag ref="cyGridster" :your-list="this.$store.getters.showList" :base-margin-left="baseMarginLeft" :base-margin-top="baseMarginTop" :base-width="baseWidth"
             :base-height="baseHeight">
-          <template v-for="(item,index) in myList" :slot="'slot'+index">
+          <template v-for="(item,index) in this.$store.getters.showList" :slot="'slot'+index">
             <div class="dragHandle">
               <div class="tool">
                 <span @click="deleteItem(index)" class="el-icon-close" style="color:red;"></span>
@@ -28,46 +28,8 @@
 
     export default {
         data() {
-            let list = mock.mock({
-                // "myList|10": [{
-                //     "id|+1": 1,
-                //     x: '@integer(1,5)',
-                //     y: '@integer(1,5)',
-                //     sizex: '@integer(1,3)',
-                //     sizey: '@integer(1,3)',
-                // }]
-                myList: [{
-                    "id": 1,
-                    "x": 1,
-                    "y": 1,
-                    "sizex": 5,
-                    "sizey": 2,
-                    "component":"zj1"
-                },{
-                  "id": 2,
-                  "x": 6,
-                  "y": 1,
-                  "sizex": 5,
-                  "sizey": 2,
-                  "component":"zj2"
-                },{
-                  "id": 3,
-                  "x": 1,
-                  "y": 2,
-                  "sizex": 5,
-                  "sizey": 2,
-                  "component":"zj3"
-                },{
-                  "id": 4,
-                  "x": 6,
-                  "y": 1,
-                  "sizex": 5,
-                  "sizey": 2,
-                  "component":"zj4"
-                }]
-            })
             return {
-                myList: list.myList,
+                // myList: this.$store.getters.showList,
                 baseWidth: 0,
                 baseHeight: 0
             }
@@ -97,7 +59,6 @@
         },
         mounted() {
             let gridster = this.$refs['cyGridster']; //获取gridster实例
-            console.log(gridster)
             gridster.init(); //在适当的时候初始化布局组件
         },
         methods: {
