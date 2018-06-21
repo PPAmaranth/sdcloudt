@@ -5,9 +5,9 @@
             :base-height="baseHeight">
           <template v-for="(item,index) in this.$store.getters.showList" :slot="'slot'+index">
             <div class="dragHandle">
-              <div class="tool">
-                <span @click="deleteItem(index)" class="el-icon-close" style="color:red;"></span>
-              </div>
+              <!--<div class="tool">-->
+                <!--<span @click="deleteItem(index)" class="el-icon-close" style="color:red;"></span>-->
+              <!--</div>-->
               <div :is="item.component"></div>
             </div>
           </template>
@@ -25,7 +25,7 @@
     import zj2 from '@/components/zj2'
     import zj3 from '@/components/zj3'
     import zj4 from '@/components/zj4'
-
+    import pz2 from '@/page/pz2'
     export default {
         data() {
             return {
@@ -36,7 +36,7 @@
         },
         components: {
             'power-drag': drag,
-            zj1,zj2,zj3,zj4
+            zj1,zj2,zj3,zj4,pz2
         },
         name: 'app',
         methods: {
@@ -62,11 +62,11 @@
             gridster.init(); //在适当的时候初始化布局组件
         },
         methods: {
-          deleteItem(index) {
-            let gridster = this.$refs['cyGridster']; //获取gridster实例
-            gridster.removeItem(index); //此时会在this.myList的index位置将item置为{}，目的是为了不让vue重新渲染整个v-for。
-            //注意，这里删除布局框并不会删除里面的组件，组件需要自己用v-if来控制销毁，如果是highchart，必须手动调用chartInstance.$destroy()
-          }
+          // deleteItem(index) {
+          //   let gridster = this.$refs['cyGridster']; //获取gridster实例
+          //   gridster.removeItem(index); //此时会在this.myList的index位置将item置为{}，目的是为了不让vue重新渲染整个v-for。
+          //   //注意，这里删除布局框并不会删除里面的组件，组件需要自己用v-if来控制销毁，如果是highchart，必须手动调用chartInstance.$destroy()
+          // }
         }
     }
 

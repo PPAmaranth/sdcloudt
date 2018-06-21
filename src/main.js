@@ -41,7 +41,7 @@ const store = new Vuex.Store({
       'id': 3,
       'name': '组件3',
       'x': 1,
-      'y': 2,
+      'y': 3,
       'sizex': 5,
       'sizey': 2,
       'component': 'zj3',
@@ -50,11 +50,20 @@ const store = new Vuex.Store({
       'id': 4,
       'name': '组件4',
       'x': 6,
-      'y': 1,
+      'y': 3,
       'sizex': 5,
       'sizey': 2,
       'component': 'zj4',
       'isshow': true
+    },{
+      'id': 5,
+      'name': '凭证2',
+      'x': 6,
+      'y': 5,
+      'sizex': 5,
+      'sizey': 2,
+      'component': 'pz2',
+      'isshow': false
     }]
   },
   getters: {
