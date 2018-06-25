@@ -14,7 +14,19 @@
           </el-collapse-item>
         </el-collapse>
       </div>
-      <div class="main_content" :is="nowcomponent"></div>
+      <!--<div class="main_content" :is="nowcomponent"></div>-->
+      <div style="width:calc(100% - 160px);">
+        <el-tabs v-model="nowcomponent" type="card" @tab-click="handleClick" closable @tab-remove="removeTab">
+          <el-tab-pane
+            v-for="(item, index) in now_arr"
+            :key="item.name"
+            :label="item.label"
+            :name="item.name"
+          >
+            <div :is="item.name"></div>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
     </div>
     <sd-footer></sd-footer>
   </div>
@@ -37,7 +49,11 @@ export default {
   data () {
     return {
       nowcomponent:'erpmain',
-      activeNames: ['1']
+      activeNames: ['1'],
+      now_arr: [{
+        label: '首页',
+        name: 'erpmain'
+      },]
     }
   },
   components: {
@@ -52,6 +68,27 @@ export default {
     xsdd,
     pz,
     pz2
+  },
+  methods: {
+    handleClick(tab, event) {
+      console.log(tab, event);
+    },
+    removeTab(targetName) {
+      let tabs = this.now_arr;
+      let activeName = this.nowcomponent;
+      if (activeName === targetName) {
+        tabs.forEach((tab, index) => {
+          if (tab.name === targetName) {
+            let nextTab = tabs[index + 1] || tabs[index - 1];
+            if (nextTab) {
+              activeName = nextTab.name;
+            }
+          }
+        });
+      }
+      this.nowcomponent = activeName;
+      this.now_arr = tabs.filter(tab => tab.name !== targetName);
+    }
   }
 }
 </script>
@@ -68,7 +105,7 @@ export default {
     align-items:stretch;
     .nav_test{
       background:#e8e7e7;
-      min-width:150px;
+      min-width:160px;
       min-height:650px;
       /deep/ .el-menu{
         border-right:none;
@@ -91,6 +128,9 @@ export default {
     }
     .main_content{
       width:100%;
+    }
+    /deep/ .el-tabs__header{
+      margin:0px;
     }
   }
 </style>

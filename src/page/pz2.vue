@@ -66,7 +66,7 @@
               border
               :data="tableData3"
               show-summary
-              height="360"
+              height="320"
               :summary-method="getSummaries"
               style="width: 100%"
               ref="singleTable"
@@ -858,7 +858,7 @@
         }
       }
       .content2{
-        height:360px;
+        height:320px;
       }
       .content3{
         min-height:50px;
@@ -940,7 +940,7 @@
     .el-table__row{
       height:29px;
     }
-    .addBtn{
+    /deep/ .addBtn{
       cursor: pointer;
     }
 </style>

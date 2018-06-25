@@ -1,15 +1,15 @@
 <template>
 	<div class="nav_container">
 		<div class="menu">
-			<el-menu :default-active="activeIndex" class="el-menu-demo" mode="vertical" @select="handleSelect" :active-text-color="activeColor" menu-trigger="hover" collapse background-color="#e8e7e7" >
-			  <el-menu-item :index="erp_nav.erpmain.url">{{erp_nav.erpmain.name}}</el-menu-item>
+			<el-menu :default-active="this.$parent.nowcomponent" class="el-menu-demo" mode="vertical" @select="handleSelect" :active-text-color="activeColor" menu-trigger="hover" collapse background-color="#e8e7e7" >
+			  <el-menu-item :index="erp_nav.erpmain.url" :name="erp_nav.erpmain.name">{{erp_nav.erpmain.name}}</el-menu-item>
 				<el-submenu index="2">
 			    <template slot="title">{{erp_nav.nowpage}}</template>
-			    <el-submenu v-for="item1 in erp_nav.children" :index="item1.url" :key="item1.url">
+			    <el-submenu v-for="item1 in erp_nav.children" :index="item1.url" :key="item1.url" :name="item1.name">
 			      <template slot="title">{{item1.name}}</template>
-			      <el-menu-item v-for="item2 in item1.children" :index="item2.url" :key="item2.url">{{item2.name}}</el-menu-item>
+			      <el-menu-item v-for="item2 in item1.children" :index="item2.url" :key="item2.url" :name="item2.name">{{item2.name}}</el-menu-item>
 			    </el-submenu>
-			    <el-menu-item v-for="item3 in erp_nav.single" :index="item3.url" :key="item3.url">{{item3.name}}</el-menu-item>
+			    <el-menu-item v-for="item3 in erp_nav.single" :index="item3.url" :key="item3.url" :name="item3.name">{{item3.name}}</el-menu-item>
 			  </el-submenu>
 			</el-menu>
 			<div class="line"></div>
@@ -23,7 +23,7 @@ export default {
   	data () {
 	    return {
 	    activeColor:'#9b1700',
-	    activeIndex: 'erpmain',
+	    // activeIndex: 'erpmain',
         erp_nav:{
         	nowpage:"导航",
         	erpmain:{
@@ -66,8 +66,21 @@ export default {
       };
 	},
     methods: {
-      handleSelect(key, keyPath) {
-      	this.$parent.nowcomponent = key;
+      handleSelect(key,keyPath,event) {
+        let obj = {}
+        obj.label = event.$attrs.name
+        obj.name = key
+        let exist = false
+        for(let i=0;i<this.$parent.now_arr.length;i++){
+          if(this.$parent.now_arr[i].label == obj.label){
+            this.$parent.nowcomponent = key
+            exist = true
+          }
+        }
+        if(exist==false){
+          this.$parent.now_arr.push(obj)
+          this.$parent.nowcomponent = key
+        }
       }
     }
 }
