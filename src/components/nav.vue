@@ -65,24 +65,24 @@ export default {
         }
       };
 	},
-    methods: {
-      handleSelect(key,keyPath,event) {
-        let obj = {}
-        obj.label = event.$attrs.name
-        obj.name = key
-        let exist = false
-        for(let i=0;i<this.$parent.now_arr.length;i++){
-          if(this.$parent.now_arr[i].label == obj.label){
-            this.$parent.nowcomponent = key
-            exist = true
-          }
-        }
-        if(exist==false){
-          this.$parent.now_arr.push(obj)
+  methods: {
+    handleSelect(key,keyPath,event) {
+      let obj = {}
+      obj.label = event.$attrs.name
+      obj.name = key
+      let exist = false
+      for(let i=0;i<this.$parent.now_arr.length;i++){
+        if(this.$parent.now_arr[i].label == obj.label){
           this.$parent.nowcomponent = key
+          exist = true
         }
       }
+      if(exist==false){
+        this.$parent.now_arr.push(obj)
+        this.$parent.nowcomponent = key
+      }
     }
+  }
 }
 </script>
 <style lang="less" scoped>
