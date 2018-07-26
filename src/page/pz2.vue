@@ -867,7 +867,7 @@
         padding-top:20px;
       }
     }
-    .tb-edit{
+    /deep/ .tb-edit{
       .cell{
         overflow: hidden;
         text-overflow: ellipsis;
@@ -922,7 +922,7 @@
           display: block;
         }
         .el-input+span,.el-select+span,.el-input-number+span{
-          display: none
+          display: none;
         }
       }
     }
